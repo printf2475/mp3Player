@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:title="내음악"
+        android:id="@+id/btn_musicAll"
+        android:icon="@mipmap/music"/>
+
+    <item
+        android:title="플레이리스트"
+        android:id="@+id/btn_musicMyList"
+        android:icon="@mipmap/music"/>
+
+    <item
+        android:title="검색"
+        android:id="@+id/btn_musicSearch"
+        android:icon="@mipmap/music"/>
+
+</menu>
