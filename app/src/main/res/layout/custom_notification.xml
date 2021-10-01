@@ -1,19 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal">
+    <LinearLayout
+        android:layout_width="0sp"
+        android:layout_height="match_parent"
+        android:layout_weight="10"
+        android:orientation="vertical"
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="match_parent" />
+        >
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
 
-    <TextView
-        android:id="@+id/message"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="match_parent" />
+            android:text="노래이름"
+            style="@style/TextAppearance.Compat.Notification.Title"
+
+            />
+
+        <TextView
+            android:id="@+id/message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+
+            android:text="아티스트"
+            style="@style/TextAppearance.Compat.Notification.Line2"
+            />
+
+
+    </LinearLayout>
+
+
+    <ImageButton
+        android:id="@+id/btn_stopService"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="338dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="368dp"
+        android:adjustViewBounds="true"
+        android:src="@mipmap/stop"
+
+        tools:ignore="SpeakableTextPresentCheck" />
 
 </LinearLayout>

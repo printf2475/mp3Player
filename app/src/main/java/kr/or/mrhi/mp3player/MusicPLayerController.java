@@ -8,15 +8,24 @@ import static kr.or.mrhi.mp3player.MusicService.ACTION_MUSIC_PREV;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.util.Log;
+
+import java.util.List;
+
+import kr.or.mrhi.mp3player.activity.MusicActivity;
 
 public class MusicPLayerController {
     private MediaPlayer mediaPlayer;
-    private MusicData musicData =null;
+    private List<MusicData> musicDataList;
     private Context context;
     private static MusicPLayerController instance = new MusicPLayerController() ;
-    private OnChangeProgressPositionListener onChangeProgressPositionListener;
-    private int currentStatus;
+    private OnMusicPlayerStatusListener onMusicPlayerStatusListener;
+    private String currentStatus;
+    private Boolean isPlaying;
+    private int position;
+
+
 
     private MusicPLayerController() {
 
@@ -28,13 +37,20 @@ public class MusicPLayerController {
 
 
     public void initPlayer(){
-        mediaPlayer = MediaPlayer.create(context, musicData.getUri());
+        mediaPlayer = MediaPlayer.create(context, musicDataList.get(position).getUri());
+        mediaPlayer.setOnCompletionListener((mediaPlayer)->{
+            mediaPlayer.pause();
+            onMusicPlayerStatusListener.onChangeStatus(ACTION_MUSIC_NEXT);
+        });
+
+
+
     }
 
     public void play() {
-
-        currentStatus=ACTION_MUSIC_PLAY;
         mediaPlayer.start();
+        currentStatus=ACTION_MUSIC_PLAY;
+        onMusicPlayerStatusListener.onChangeStatus(currentStatus);
         seekBarThreadStart();
         Log.i("컨트롤러", "음악시작");
     }
@@ -42,15 +58,23 @@ public class MusicPLayerController {
     public void pause(){
         mediaPlayer.pause();
         currentStatus=ACTION_MUSIC_PAUSE;
-
+        onMusicPlayerStatusListener.onChangeStatus(currentStatus);
     }
 
     public void next(){
+        mediaPlayer.stop();
         currentStatus=ACTION_MUSIC_NEXT;
+        mediaPlayer = MediaPlayer.create(context, musicDataList.get(++position).getUri());
+        mediaPlayer.start();
+        onMusicPlayerStatusListener.onChangeStatus(currentStatus);
     }
 
     public void prev(){
+        mediaPlayer.stop();
+        mediaPlayer = MediaPlayer.create(context, musicDataList.get(--position).getUri());
+        mediaPlayer.start();
         currentStatus=ACTION_MUSIC_PREV;
+        onMusicPlayerStatusListener.onChangeStatus(currentStatus);
     }
 
     public void stop(){
@@ -63,11 +87,16 @@ public class MusicPLayerController {
         mediaPlayer.seekTo(progress);
     }
 
+    public Boolean getPlaying() {
+        return mediaPlayer.isPlaying();
+    }
+
 
     private void seekBarThreadStart() {
         new Thread(() -> {
             while (mediaPlayer.isPlaying()) {
-                onChangeProgressPositionListener.onChangeProgressPosition(mediaPlayer.getCurrentPosition(), mediaPlayer.getDuration());
+                onMusicPlayerStatusListener.onChangeProgressPosition(
+                        mediaPlayer.getCurrentPosition(), mediaPlayer.getDuration(), musicDataList.get(position).getId());
             }
             try {
                 Thread.sleep(100);
@@ -77,19 +106,27 @@ public class MusicPLayerController {
         }).start();
     }
 
-    public interface OnChangeProgressPositionListener{
-        void onChangeProgressPosition(int position, int maxTime);
+
+
+    public interface OnMusicPlayerStatusListener{
+        void onChangeProgressPosition(int progressPosition, int maxTime, Long musicId);
+        void onChangeStatus(String status);
     }
 
     public void setContext(Context context) {
         this.context = context;
     }
 
-    public void setMusicData(MusicData musicData) {
-        this.musicData = musicData;
+    public void setMusicDataList(List<MusicData> musicDataList) {
+        this.musicDataList = musicDataList;
     }
 
-    public void setOnChangeProgressPositionListener(OnChangeProgressPositionListener onChangeProgressPositionListener) {
-        this.onChangeProgressPositionListener = onChangeProgressPositionListener;
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+
+    public void setOnChangeProgressPositionListener(OnMusicPlayerStatusListener onMusicPlayerStatusListener) {
+        this.onMusicPlayerStatusListener = onMusicPlayerStatusListener;
     }
 }

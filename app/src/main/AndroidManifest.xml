@@ -27,9 +27,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".MusicService"
-            android:enabled="true"
-            android:stopWithTask="false"/>
+        <service android:name=".MusicService" />
 
 
 
