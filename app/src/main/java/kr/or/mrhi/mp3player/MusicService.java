@@ -60,14 +60,12 @@ public class MusicService extends Service {
                 currentStatus = ACTION_MUSIC_PLAY;
                 musicDataList = (List<MusicData>) intent.getSerializableExtra("MusicList");
                 musicDataPosition = intent.getIntExtra("CurrentMusicPos", 1000);
+
                 Log.i("데이터", "startService" +musicDataPosition + musicDataList.get(musicDataPosition).toString());
                 Log.i("서비스", "서비스 들어옴" +musicDataPosition);
                 controller.setMusicDataList(musicDataList);
                 controller.setPosition(musicDataPosition);
                 controller.initPlayer();
-                controller.play();
-
-
 
                 break;
             case ACTION_MUSIC_PLAY:
@@ -82,12 +80,10 @@ public class MusicService extends Service {
                 break;
 
             case ACTION_MUSIC_NEXT:
-
                 controller.next();
                 break;
 
             case ACTION_MUSIC_PREV:
-
                 controller.prev();
                 break;
 
@@ -113,8 +109,8 @@ public class MusicService extends Service {
         Intent intent = new Intent(this, MusicActivity.class);
         intent.putExtra("MusicList", (ArrayList<MusicData>) musicDataList);
         intent.putExtra("position", musicDataPosition);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         Log.i("데이터", "startService" +musicDataPosition + musicDataList.get(musicDataPosition).toString());
-
 
         title = musicDataList.get(musicDataPosition).getTitle();
         content = musicDataList.get(musicDataPosition).getArtist();
@@ -187,6 +183,7 @@ public class MusicService extends Service {
     public void onDestroy() {
         super.onDestroy();
         notificationManager.cancelAll();
+        Log.i("서비스", "서비스 죽음");
 
     }
 

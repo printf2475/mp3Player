@@ -17,6 +17,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.app.StatusBarManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -64,9 +65,10 @@ public class MusicActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_music);
         mViewModel = new ViewModelProvider(this).get(MusicViewModel.class);
-        isFirstCheckFlag = false;
+
         initView();
 
     }
@@ -74,14 +76,15 @@ public class MusicActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onResume() {
         super.onResume();
-
+        isFirstCheckFlag = false;
+        controller.setDestroyActiviry(false);
         initMusicData();
 
         Log.i("데이터", musicId.toString() + ":" + musicData.getId().toString());
         if (!(musicId.equals(musicData.getId())^isFirstCheckFlag)) {
             startMyService(ACTION_MUSIC_SET);
+            startMyService(ACTION_MUSIC_PLAY);
         }
-
     }
 
     private void initMusicData() {
@@ -173,9 +176,7 @@ public class MusicActivity extends AppCompatActivity implements View.OnClickList
         intentService.putExtra("CurrentMusicPos", musicDataPosition);
         intentService.putExtra("MusicList", (Serializable) list);
         Log.i("데이터", "startService" + musicDataPosition + list.get(musicDataPosition).toString());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startService(intentService);
-        }
+        startService(intentService);
 
     }
 
@@ -183,7 +184,13 @@ public class MusicActivity extends AppCompatActivity implements View.OnClickList
     private void startMyActivity(int num) {
         Intent prevIntent = new Intent(MusicActivity.this, MusicActivity.class);
         prevIntent.putExtra("MusicList", (ArrayList<MusicData>) list);
-        prevIntent.putExtra("position", musicDataPosition + num);
+        musicDataPosition += num;
+        if (musicDataPosition<0){
+            musicDataPosition= list.size()-1;
+        }else if (musicDataPosition>list.size()-1){
+            musicDataPosition=0;
+        }
+        prevIntent.putExtra("position", musicDataPosition);
         startActivity(prevIntent);
     }
 
@@ -208,12 +215,10 @@ public class MusicActivity extends AppCompatActivity implements View.OnClickList
         startMyService(ACTION_MUSIC_PLAY);
     }
 
-
     private String timeDataFometer(int time) {
         int nowTime = time / 1000;
         return String.format("%d : %02d", nowTime / 60, nowTime % 60);
     }
-
 
     @Override
     protected void onPause() {
@@ -224,7 +229,9 @@ public class MusicActivity extends AppCompatActivity implements View.OnClickList
             stopService(intent);
             Log.i("서비스 종료", "종료됨" + controller.getPlaying());
         }
+        controller.setDestroyActiviry(true);
     }
+
 
 
     @Override
@@ -236,7 +243,6 @@ public class MusicActivity extends AppCompatActivity implements View.OnClickList
         startActivity(intent);
 
     }
-
 
     @Override
     public void onChangeProgressPosition(int progressPosition, int maxTime, Long musicId) {

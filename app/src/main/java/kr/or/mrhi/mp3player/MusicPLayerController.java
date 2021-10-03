@@ -19,12 +19,11 @@ public class MusicPLayerController {
     private MediaPlayer mediaPlayer;
     private List<MusicData> musicDataList;
     private Context context;
-    private static MusicPLayerController instance = new MusicPLayerController() ;
+    private static MusicPLayerController instance = new MusicPLayerController();
     private OnMusicPlayerStatusListener onMusicPlayerStatusListener;
     private String currentStatus;
-    private Boolean isPlaying;
     private int position;
-
+    private static boolean isDestroyActiviry=false;
 
 
     private MusicPLayerController() {
@@ -36,54 +35,57 @@ public class MusicPLayerController {
     }
 
 
-    public void initPlayer(){
+    public void initPlayer() {
         mediaPlayer = MediaPlayer.create(context, musicDataList.get(position).getUri());
-        mediaPlayer.setOnCompletionListener((mediaPlayer)->{
+        mediaPlayer.setOnCompletionListener((mediaPlayer) -> {
             mediaPlayer.pause();
-            onMusicPlayerStatusListener.onChangeStatus(ACTION_MUSIC_NEXT);
+            onChangeStatus(ACTION_MUSIC_NEXT);
+
         });
-
-
 
     }
 
+
     public void play() {
         mediaPlayer.start();
-        currentStatus=ACTION_MUSIC_PLAY;
-        onMusicPlayerStatusListener.onChangeStatus(currentStatus);
+        currentStatus = ACTION_MUSIC_PLAY;
+        onChangeStatus(currentStatus);
         seekBarThreadStart();
         Log.i("컨트롤러", "음악시작");
     }
 
-    public void pause(){
+    public void pause() {
         mediaPlayer.pause();
-        currentStatus=ACTION_MUSIC_PAUSE;
-        onMusicPlayerStatusListener.onChangeStatus(currentStatus);
+        currentStatus = ACTION_MUSIC_PAUSE;
+        onChangeStatus(currentStatus);
     }
 
-    public void next(){
+    public void next() {
         mediaPlayer.stop();
-        currentStatus=ACTION_MUSIC_NEXT;
-        mediaPlayer = MediaPlayer.create(context, musicDataList.get(++position).getUri());
+        if (++position > musicDataList.size() - 1) {
+            position = 0;
+        }
+        mediaPlayer = MediaPlayer.create(context, musicDataList.get(position).getUri());
         mediaPlayer.start();
-        onMusicPlayerStatusListener.onChangeStatus(currentStatus);
+        currentStatus = ACTION_MUSIC_NEXT;
+        onChangeStatus(currentStatus);
+        Log.i("컨트롤러", "NEXT");
     }
 
-    public void prev(){
+    public void prev() {
         mediaPlayer.stop();
-        mediaPlayer = MediaPlayer.create(context, musicDataList.get(--position).getUri());
+        if (--position < 0) {
+            position = musicDataList.size() - 1;
+        }
+        mediaPlayer = MediaPlayer.create(context, musicDataList.get(position).getUri());
         mediaPlayer.start();
-        currentStatus=ACTION_MUSIC_PREV;
-        onMusicPlayerStatusListener.onChangeStatus(currentStatus);
+        currentStatus = ACTION_MUSIC_PREV;
+        onChangeStatus(currentStatus);
+        Log.i("컨트롤러", "PREV");
     }
 
-    public void stop(){
-        mediaPlayer.stop();
-        currentStatus=ACTION_MUSIC_PAUSE;
 
-    }
-
-    public void setSeekTo(int progress){
+    public void setSeekTo(int progress) {
         mediaPlayer.seekTo(progress);
     }
 
@@ -99,7 +101,7 @@ public class MusicPLayerController {
                         mediaPlayer.getCurrentPosition(), mediaPlayer.getDuration(), musicDataList.get(position).getId());
             }
             try {
-                Thread.sleep(100);
+                Thread.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -107,11 +109,17 @@ public class MusicPLayerController {
     }
 
 
-
-    public interface OnMusicPlayerStatusListener{
+    public interface OnMusicPlayerStatusListener {
         void onChangeProgressPosition(int progressPosition, int maxTime, Long musicId);
+
         void onChangeStatus(String status);
     }
+
+    public void setOnChangeProgressPositionListener(OnMusicPlayerStatusListener onMusicPlayerStatusListener) {
+        this.onMusicPlayerStatusListener = onMusicPlayerStatusListener;
+    }
+
+
 
     public void setContext(Context context) {
         this.context = context;
@@ -121,12 +129,21 @@ public class MusicPLayerController {
         this.musicDataList = musicDataList;
     }
 
+
     public void setPosition(int position) {
         this.position = position;
     }
 
 
-    public void setOnChangeProgressPositionListener(OnMusicPlayerStatusListener onMusicPlayerStatusListener) {
-        this.onMusicPlayerStatusListener = onMusicPlayerStatusListener;
+    public void setDestroyActiviry(boolean destroyActiviry) {
+        this.isDestroyActiviry = destroyActiviry;
+        Log.i("데이터", "액티비티 디스트로이"+isDestroyActiviry);
     }
+
+    private void onChangeStatus(String status) {
+        if (this.isDestroyActiviry == false) {
+            onMusicPlayerStatusListener.onChangeStatus(status);
+        }
+    }
+
 }
