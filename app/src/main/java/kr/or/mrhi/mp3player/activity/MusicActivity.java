@@ -44,7 +44,6 @@ import kr.or.mrhi.mp3player.R;
 
 public class MusicActivity extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, MusicPLayerController.OnMusicPlayerStatusListener {
 
-
     private ImageButton btn_start, btn_pre, btn_next;
     private ToggleButton btn_addPlayList;
     private int btnCount = 0;
@@ -88,7 +87,7 @@ public class MusicActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void initMusicData() {
-
+        btn_addPlayList.setBackgroundResource(R.mipmap.not_like);
         List<Long> uriList = mViewModel.getMusicIdList();
         Intent intent = getIntent();
         list = (List<MusicData>) intent.getSerializableExtra("MusicList");
@@ -96,12 +95,12 @@ public class MusicActivity extends AppCompatActivity implements View.OnClickList
         fragmentPos = intent.getIntExtra("fragmentPos", 100);
         musicData = list.get(musicDataPosition);
         for (Long id : uriList) {
-            Log.e("데이터베이스", id.toString() + musicData.getId().toString());
             if (musicData.getId().equals(id)) {
-                Log.e("데이터베이스", "select 로 값 비교");
                 btn_addPlayList.toggle();
+                btn_addPlayList.setBackgroundResource(R.mipmap.like);
             }
         }
+
         Log.i("데이터", musicData.toString());
         tv_title.setText(musicData.getTitle());
         tv_artist.setText(musicData.getArtist());
@@ -163,8 +162,10 @@ public class MusicActivity extends AppCompatActivity implements View.OnClickList
             case R.id.btn_add_playlist:
                 if (btn_addPlayList.isChecked()) {
                     mViewModel.enterMyPlayList(musicData.getId());
+                    btn_addPlayList.setBackgroundResource(R.mipmap.like);
                 } else {
                     mViewModel.deleteMyPlayList(musicData.getId());
+                    btn_addPlayList.setBackgroundResource(R.mipmap.not_like);
                 }
                 break;
         }

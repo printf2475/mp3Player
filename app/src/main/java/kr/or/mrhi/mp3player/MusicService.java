@@ -81,10 +81,14 @@ public class MusicService extends Service {
 
             case ACTION_MUSIC_NEXT:
                 controller.next();
+                musicDataPosition++;
+                currentStatus = ACTION_MUSIC_PLAY;
                 break;
 
             case ACTION_MUSIC_PREV:
                 controller.prev();
+                musicDataPosition--;
+                currentStatus = ACTION_MUSIC_PLAY;
                 break;
 
             case ACTION_MUSIC_PROGRESS_CHANGE:
@@ -148,6 +152,7 @@ public class MusicService extends Service {
                 break;
             case ACTION_MUSIC_PREV:
                 btnTitle = ACTION_MUSIC_PREV;
+
                 break;
 
         }
