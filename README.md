@@ -25,20 +25,20 @@ MP3 플레이어를 제작하였습니다
 
 ### 내 음악
 
-![다운로드](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/45c4391e-2d40-4d70-9442-365af29ec18e/Untitled.png)
+![image](https://user-images.githubusercontent.com/80373743/146633317-09f2d180-8e5d-4163-b650-6f8e3251ee8f.png)
 
 ### 현재 음악
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ebf70c56-0141-4a9b-82b9-d36097174b9a/Untitled.png)
+![image](https://user-images.githubusercontent.com/80373743/146633328-ed836856-6131-4b7b-83d2-e05c2740d256.png)
 
 ### 플레이 리스트
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/25f8c85f-cd9c-4491-a541-f42c55006952/Untitled.png)
+![image](https://user-images.githubusercontent.com/80373743/146633331-53745f9b-e123-41df-863e-3cb1e8ba1164.png)
 
 ### 검색
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/1cd74684-286e-45e3-b823-088e9b0527a5/Untitled.png)
+![image](https://user-images.githubusercontent.com/80373743/146633333-caf28983-7baf-4606-82b0-eda99eee9daf.png)
 
 ### 백 그라운드 재생, 노티피케이션
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/eaf7feba-264e-4e80-ba0f-84c28bab539d/Untitled.png)
+![image](https://user-images.githubusercontent.com/80373743/146633335-1eb66d11-e324-445d-a7a9-575cf8d006c6.png)
